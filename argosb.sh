@@ -43,30 +43,11 @@ export port_vm_ws=${vmpt:-''}
 export ARGO_DOMAIN=${agn:-''}   
 export ARGO_AUTH=${agk:-''} 
 
-del(){
-kill -15 $(cat /etc/s-box-ag/sbargopid.log 2>/dev/null) >/dev/null 2>&1
-kill -15 $(cat /etc/s-box-ag/sbpid.log 2>/dev/null) >/dev/null 2>&1
-crontab -l > /tmp/crontab.tmp
-sed -i '/sbargopid/d' /tmp/crontab.tmp
-sed -i '/sbpid/d' /tmp/crontab.tmp
-crontab /tmp/crontab.tmp
-rm /tmp/crontab.tmp
-rm -rf /etc/s-box-ag /usr/bin/agsb
-}
 up(){
 rm -rf /usr/bin/agsb
 curl -L -o /usr/bin/agsb -# --retry 2 --insecure https://raw.githubusercontent.com/yonggekkk/argosb/main/argosb.sh
 chmod +x /usr/bin/agsb
 }
-if [[ "$1" == "del" ]]; then
-del && sleep 2
-echo "卸载完成" 
-exit
-elif [[ "$1" == "up" ]]; then
-up && sleep 2
-echo "升级完成" 
-exit
-fi
 
 if [[ -n $(ps -e | grep sing-box) ]] && [[ -n $(ps -e | grep cloudflared) ]] && [[ -e /etc/s-box-ag/list.txt ]]; then
 echo "ArgoSB脚本已在运行中"
